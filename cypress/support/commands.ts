@@ -35,3 +35,22 @@
 //     }
 //   }
 // }
+
+Cypress.Commands.add('login', (email, password) => {
+    // Should implement login as api but for now we will use UI
+
+    cy.session(email, () => {
+        cy.intercept('/favicon.ico').as('favicon')
+        cy.visit('/')
+        cy.wait(3000) // Wait for 3000 ms to ensure the page is loaded
+        cy.get('[data-testid="emailInput"]').focus().type(email)
+        cy.get('[data-testid="passwordInput"]').focus().type(password)  
+        cy.get('[data-testid="login_btn"]').click().then(() => {
+            cy.wait(2000) // Wait for 1000 ms to ensure the page is loaded
+            cy.get('[data-testid="ok_btn"]').should('be.visible').click() // Click default boundary
+            cy.get('button').contains('Create new project').should('be.visible')
+            
+        })
+    })
+})
+
